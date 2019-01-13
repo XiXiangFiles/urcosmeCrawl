@@ -2,20 +2,30 @@
 import urllib
 from bs4 import BeautifulSoup
 import requests as req
+from sets import Set
 #req.post('https://httpbin.org/post', data = {'key':'value'})
 
 # htmlfile=urllib.urlopen("https://www.urcosme.com/brands/38/products?category=0&series=397&is_limit=false&is_discontinued=false&is_withdraw=false&sort=1")
+brandset=Set()
+categoryset=Set()
+productset=Set()
+serialset=Set()
 
 for brandNumI in range(1,1500):
+    productset.clear()
+    categoryset.clear()
+    serialset.clear()
     for categoryNumI in range (0,200):
-        for serialNumI in range(0,20000):
+        for serialNumI in range(0,12500):
             for pageNumI in range(1,30):
-                brandNum=str(categoryNumI)
+                brandNum=str(brandNumI)
                 categoryNum=str(categoryNumI)
                 serialNum=str(serialNumI)
                 pageNum=str(pageNumI)
-
-                htmlfile=urllib.urlopen("https://www.urcosme.com/brands/{}/products?category={}&is_discontinued=false&is_limit=false&is_withdraw=false&page={}&series={}&sort=1".format('38', '0', '1','397'))
+                
+                print 'brandnum = {} categoryNum= {} serialNum=,{} pageNum= {}'.format(brandNum,categoryNum,serialNum,pageNum)
+                print "https://www.urcosme.com/brands/{}/products?category={}&is_discontinued=false&is_limit=false&is_withdraw=false&page={}&series={}&sort=1".format(brandNumI, categoryNum, pageNumI,serialNum)
+                htmlfile=urllib.urlopen("https://www.urcosme.com/brands/{}/products?category={}&is_discontinued=false&is_limit=false&is_withdraw=false&page={}&series={}&sort=1".format(brandNumI, categoryNum, pageNumI,serialNum))
                 htmltext=htmlfile.read()
                 soup = BeautifulSoup(htmltext)
                 allcategory=soup.select("#category > option ")
@@ -38,21 +48,34 @@ for brandNumI in range(1,1500):
                     brandName=product.select(".product-infomation > .brand-name > a")[0].get_text()
                     brandId=product.select(".product-infomation > .brand-name > a")[0].get('href').split('/')
                     brandId=brandId[2]
-                    requestBrand=req.post('http://140.119.163.195/urcosmeAPI/brands.php', data = {'b_id':brandNum,'name':brandName})
-                    print "requestBrand http status : %s " % requestBrand.status_code
-
+                    if str({'b_id':brandNum,'name':brandName})  in brandset:
+                        pass
+                    else :
+                        requestBrand=req.post('http://140.119.163.195/urcosmeAPI/brands.php', data = {'b_id':brandNumI,'name':brandName})
+                        print "requestBrand http status : %s " % requestBrand.status_code
+                        print str({'b_id':brandNum,'name':brandName})
+                        brandset.add(str({'b_id':brandNum,'name':brandName}))
+                        
                     
                     productName=product.select(".product-infomation > .product-name > a")[0].get_text()
                     productScore=product.select(".product-infomation > .product-score >.product-score-text")[1].get_text()
 
-                    requestCategory=req.post('http://140.119.163.195/urcosmeAPI/categories.php', data = {'c_id':categoryNum,'b_id':brandNum ,'brandName':brandName,'className':categoryName}) 
-                    print "requestCategory http status : %s " % requestCategory.status_code
+                    if str({'c_id':categoryNum,'b_id':brandNum ,'brandName':brandName,'className':categoryName}) in categoryset : 
+                        pass
+                    else:
+                        requestCategory=req.post('http://140.119.163.195/urcosmeAPI/categories.php', data = {'c_id':categoryNum,'b_id':brandNum ,'brandName':brandName,'className':categoryName}) 
+                        print "requestCategory http status : %s " % requestCategory.status_code
+                        categoryset.add(str({'c_id':categoryNum,'b_id':brandNum ,'brandName':brandName,'className':categoryName}))
+                        print ('test- %s' %(requestCategory.text))
 
-                    requestSerial=req.post('http://140.119.163.195/urcosmeAPI/serial.php', data = {'s_id':serialNum,'serialName':serialName ,'brandName':brandName,'className':categoryName}) 
-                    print "requestSerial http status : %s " % requestSerial.status_code
+                    if str({'s_id':serialNum,'serialName':serialName ,'brandName':brandName,'className':categoryName}) in serialset:
+                        pass
+                    else:
+                        requestSerial=req.post('http://140.119.163.195/urcosmeAPI/serial.php', data = {'s_id':serialNum,'serialName':serialName ,'brandName':brandName,'className':categoryName}) 
+                        print "requestSerial http status : %s " % requestSerial.text
+                        serialset.add(str({'s_id':serialNum,'serialName':serialName ,'brandName':brandName,'className':categoryName}))
+                        print ("s_id=%s serialName =%s brandName=%s className=%s" % (serialNum,serialName,brandName,categoryName))
 
-                   
-                    
                     articalLink=product.select(".product-infomation > .product-review-count > a")[0].get('href')
                     priceDate=product.select(".product-infomation > .product-market-date > span")
                     price=""
@@ -62,7 +85,7 @@ for brandNumI in range(1,1500):
                             date=element.get_text().split(u'：')
                             try:
                                 date=date[1]
-                                #print date
+                                # print date
                             except:
                                 pass
                                 #print("An exception occurred")
@@ -74,6 +97,12 @@ for brandNumI in range(1,1500):
                             except:
                                 pass
 
-                    requestProducts=req.post('http://140.119.163.195/urcosmeAPI/products.php', data = {'s_id':serialNum,'productName':productName,'grade':productScore,'articalLink':'https://www.urcosme.com%s'% articalLink,'price':price,'brandName':brandName,'serialName':serialName,'className':categoryName,'marketDate':date,'$info':'NULL'}) 
-                    print "requestProducts  http status : %s" % requestProducts.status_code
+                    if str({'articalLink':'https://www.urcosme.com%s'% articalLink})in productset:
+                        pass
+                    else:
+                        requestProducts=req.post('http://140.119.163.195/urcosmeAPI/products.php', data = {'s_id':serialNum,'productName':productName,'grade':productScore,'articalLink':'https://www.urcosme.com%s'% articalLink,'price':price,'brandName':brandName,'serialName':serialName,'className':categoryName,'marketDate':date,'info':'NULL'}) 
+                        productset.add(str({'articalLink':'https://www.urcosme.com%s'% articalLink})) 
+                       # print "requestProducts http status : %s " % requestProducts.status_code
+                        print " : %s " % requestProducts.text
+                        
 
