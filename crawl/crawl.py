@@ -53,8 +53,10 @@ def crawl(start,end):
                         if serial.get('value') == serialNum:
                             serialName=serial.get_text()
 
-
                     allProduct=soup.find_all("div", attrs={"class": "uc-product-item"})
+                    if len(allProduct) == 0:
+                        break
+
                     for product in allProduct :
                         img=product.select(".product-image > a > img")[0].get('src')
                         brandName=product.select(".product-infomation > .brand-name > a")[0].get_text()
@@ -118,17 +120,8 @@ def crawl(start,end):
                         # print " : %s " % requestProducts.text
 
 def main():
-    t = thread.Thread(target = crawl(0,300))
+    t = thread.Thread(target = crawl(0,100))
     t.start()
-    t1 = thread.Thread(target = crawl(301,600))
-    t1.start()
-    t2 = thread.Thread(target = crawl(601,900))
-    t2.start()
-    t3 = thread.Thread(target = crawl(901,1200))
-    t3.start()
-    t4 = thread.Thread(target = crawl(1000,1500))
-    t4.start()
 
 main()
                         
-
