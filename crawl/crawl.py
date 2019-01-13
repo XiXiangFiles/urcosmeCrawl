@@ -146,17 +146,19 @@ def crawl(brandNumI,categoryNumI,serialNumI):
 
 
 def main():
-    for brandNum in range(1,2):
+    for brandNum in range(1011,1030):
         categorySeries=crawl(brandNum,0,0)
-        brandClass=Brand(categorySeries.category,categorySeries.serial)
-        while brandClass.status():
-            category=brandClass.popCategory()
-            series=brandClass.getSerial()
-            if category == 0 :
+        try:
+            brandClass=Brand(categorySeries.category,categorySeries.serial)
+            while brandClass.status():
                 category=brandClass.popCategory()
-            for eachSeries in series:
-                if eachSeries != 0:
-                    crawl(brandNum,category,eachSeries)
-            
+                series=brandClass.getSerial()
+                if category == 0 :
+                    category=brandClass.popCategory()
+                for eachSeries in series:
+                    if eachSeries != 0:
+                        crawl(brandNum,category,eachSeries)
+        except:
+            pass
 main()
                         
