@@ -17,19 +17,29 @@ def crawl(start,end):
         productset.clear()
         categoryset.clear()
         serialset.clear()
-        for categoryNumI in range (0,2):
-            for serialNumI in range(0,1):
-                for pageNumI in range(1,2):
+        for categoryNumI in range (0,200):
+
+            for serialNumI in range(0,12500):
+                for pageNumI in range(1,20):
                     brandNum=str(brandNumI)
                     categoryNum=str(categoryNumI)
                     serialNum=str(serialNumI)
                     pageNum=str(pageNumI)
-                    
+
                     print 'brandnum = {} categoryNum= {} serialNum=,{} pageNum= {}'.format(brandNum,categoryNum,serialNum,pageNum)
                     print "https://www.urcosme.com/brands/{}/products?category={}&is_discontinued=false&is_limit=false&is_withdraw=false&page={}&series={}&sort=1".format(brandNumI, categoryNum, pageNumI,serialNum)
                     htmlfile=urllib.urlopen("https://www.urcosme.com/brands/{}/products?category={}&is_discontinued=false&is_limit=false&is_withdraw=false&page={}&series={}&sort=1".format(brandNumI, categoryNum, pageNumI,serialNum))
                     htmltext=htmlfile.read()
                     soup = BeautifulSoup(htmltext)
+                    if soup.select('.title')[0].get_text() == "404":
+                        print "pass"
+                        flag="false"
+                        brandNumI=brandNumI+1
+                        serialNumI=0
+                        categoryNum=0
+                        serialNum=0
+                        break
+
                     allcategory=soup.select("#category > option ")
                     allserial=soup.select("#series > option ")
                     categoryName=""
@@ -108,10 +118,16 @@ def crawl(start,end):
                         # print " : %s " % requestProducts.text
 
 def main():
-    t = thread.Thread(target = crawl(0,3))
+    t = thread.Thread(target = crawl(0,300))
     t.start()
-    t1 = thread.Thread(target = crawl(4,10))
+    t1 = thread.Thread(target = crawl(301,600))
     t1.start()
+    t2 = thread.Thread(target = crawl(601,900))
+    t2.start()
+    t3 = thread.Thread(target = crawl(901,1200))
+    t3.start()
+    t4 = thread.Thread(target = crawl(1000,1500))
+    t4.start()
 
 main()
                         
