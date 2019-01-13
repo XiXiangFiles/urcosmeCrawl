@@ -17,10 +17,11 @@
 	if ($result->num_rows > 0) {
 		echo "false";
 	}else{
-		$doubleCheck="SELECT `b_id` FROM`brand` where `name`='$brandName'";
+		$doubleCheck='SELECT `b_id` FROM`brand` where `name`="'.$brandName.'"';
 		$result = $conn->query($doubleCheck);
 		if ($result->num_rows > 0){
 			$insertData="INSERT INTO `category`(`c_id`, `b_id`, `className`) VALUES ($c_id, $b_id, '$className')";
+			echo $insertData;
 			$conn->query($insertData);
 			echo 'true';
 		}else{
