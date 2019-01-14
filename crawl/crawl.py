@@ -49,9 +49,12 @@ def crawl(brandNumI,categoryNumI,serialNumI):
         htmlfile=urllib.urlopen("https://www.urcosme.com/brands/{}/products?category={}&is_discontinued=false&is_limit=false&is_withdraw=false&page={}&series={}&sort=1".format(brandNumI, categoryNum, pageNumI,serialNum))
         htmltext=htmlfile.read()
         soup = BeautifulSoup(htmltext)
-        if soup.select('.title')[0].get_text() == "404":
-            print "pass"
-            break
+        try:
+            if soup.select('.title')[0].get_text() == "404":
+                print "pass"
+                break
+        except:
+            pass
 
 
         allcategory=soup.select("#category > option ")
@@ -146,7 +149,7 @@ def crawl(brandNumI,categoryNumI,serialNumI):
 
 
 def main():
-    for brandNum in range(1011,1030):
+    for brandNum in range(9,10):
         categorySeries=crawl(brandNum,0,0)
         try:
             brandClass=Brand(categorySeries.category,categorySeries.serial)
