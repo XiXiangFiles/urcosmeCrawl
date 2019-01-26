@@ -6,7 +6,7 @@
     3. Category：分類資料表
     4. Serial：系列資料表
     5. Products： 商品資料表
-![](https://i.imgur.com/8RpatOx.jpg =400x400)
+<img width="400" height="400" src="https://i.imgur.com/8RpatOx.jpg"/>
 
 * Crawl 介紹
 brandNum 指的是品牌編號，若是需要進行單一品牌資料收集，則修改range 之中的number。
