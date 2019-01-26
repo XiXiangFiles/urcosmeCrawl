@@ -1,6 +1,5 @@
 # coding=utf-8
 import urllib
-import threading as thread
 from bs4 import BeautifulSoup
 import requests as req
 from sets import Set
@@ -149,7 +148,7 @@ def crawl(brandNumI,categoryNumI,serialNumI):
 
 
 def main():
-    for brandNum in range(9,10):
+    for brandNum in range(1,1500):
         categorySeries=crawl(brandNum,0,0)
         try:
             brandClass=Brand(categorySeries.category,categorySeries.serial)
