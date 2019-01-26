@@ -10,7 +10,7 @@
 
 * Crawl 介紹
 brandNum 指的是品牌編號，若是需要進行單一品牌資料收集，則修改range 之中的number。
-```python=
+```python
 # at crawl/crawl.py 150 line
 def main():
     for brandNum in range(1,1500):
@@ -29,7 +29,7 @@ def main():
             pass
 ```
 Class Brand 用於紀錄品牌狀態的一個資料結構，Instance "status" 為紀錄是否完成收集資料。
-```python=
+```python
 class Brand:
     category=Set()
     serial=Set()
@@ -54,7 +54,7 @@ class Brand:
 ```
 在收集資料程式碼中「req.post()」所有運用到的，都必須串連後端web server 進行資料庫的存取。
 因此「req.post()」中的URI需因主機的不同進行調整，ex http://localhost 等，web Server 程式碼為「APIs/」中
-````python=
+````python
 def crawl(brandNumI,categoryNumI,serialNumI):
     brandClass=None
     brandset=Set()
@@ -170,7 +170,7 @@ def crawl(brandNumI,categoryNumI,serialNumI):
     return brandClass
 ````
 > Note: 前端顯示需要安裝Nodejs ，進入web執行以下指令即可
-```shell=
+```shell
     npm install
     npm start
 ```
